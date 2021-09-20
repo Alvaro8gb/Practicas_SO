@@ -1,0 +1,5 @@
+usuarioso@usuarioso-virtualbox:~/Desktop/MaterialPracticas/FicherosP1/Exercises/Show_file$ gcc show_file.c -o  show_file.x
+usuarioso@usuarioso-virtualbox:~/Desktop/MaterialPracticas/FicherosP1/Exercises/Show_file$ ./show_file.x fichero.txt 
+Hola que tal 
+Ejemplo de fichero 
+

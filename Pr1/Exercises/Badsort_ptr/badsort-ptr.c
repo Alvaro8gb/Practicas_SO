@@ -1,4 +1,5 @@
 #include <stdio.h>
+const int N = 5;
 
 typedef struct {
     char data[4096];
@@ -13,31 +14,43 @@ item array[] = {
     {"alex", 1},
 };
 
+void mostrar_array(item *a, int n){
+    
+    for(int i = 0; i < n; i++)
+        printf("array[%d] = {%s, %d}\n", i, array[i].data, array[i].key);
+
+
+}
 void sort(item *a, int n) {
     int i = 0, j = 0;
     int s = 1;
-    item* p;
+    item* p = NULL; // NULL == (void *)
 
-    for(; i < n & s != 0; i++) {
+    for(; (i < n) & ( s != 0 ) ; i++) {
         s = 0;
         p = a;
         j = n-1;
         do {
+            //printf("%d  %d  ",p->key , (p+1)->key);
             if( p->key > (p+1)->key) {
                 item t = *p;
-                *p  = *(p+1);
+                p  = (p+1);
                 *(p+1) = t;
-                s++;
+                s ++;
+                
             }
         } while ( --j >= 0 );
     }
+
 }
 
+
 int main() {
-    int i;
+
+    mostrar_array(array, N);
     sort(array,5);
-    for(i = 0; i < 5; i++)
-        printf("array[%d] = {%s, %d}\n",
-                i, array[i].data, array[i].key);
+    mostrar_array(array, N);
+    
+
     return 0;
 }

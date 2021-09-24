@@ -18,13 +18,16 @@ void byte_a_byte(FILE * file ){
 }
 
 void number_bytes(FILE * file, int n_bytes){
-	char c[n_bytes];
+
+	
+	char * buffer = malloc (n_bytes * sizeof(char) ) ;
 
 
-	while ( fread(c,n_bytes,sizeof(char),file) != 0){
-		
-		fwrite( c,n_bytes,sizeof(char),stdout);
-	}
+	while ( fread(buffer,n_bytes,sizeof(char),file) != 0)
+		fwrite( buffer ,n_bytes,sizeof(char),stdout);
+	
+
+	free(buffer);
 
 	
 }
@@ -32,7 +35,7 @@ int main(int argc, char* argv[]) {
 	FILE* file=NULL;
 	
 
-	if (argc!=2) {
+	if (argc!=2 && argc !=3 ) {
 		fprintf(stderr,"Usage: %s <file_name>\n",argv[0]);
 		printf("Number of args: %d \n", argc);
 		exit(1);
@@ -43,8 +46,17 @@ int main(int argc, char* argv[]) {
 		err(2,"The input file %s could not be opened",argv[1]);	
 	
 
-	//byte_a_byte(file);
-	number_bytes(file,8);
+	if (argc == 2) 
+		byte_a_byte(file);
+	
+	
+	
+	if (argc == 3){	
+		printf("NUmber of bytes: %d\n " , *argv[2] );
+		char c =  *argv[2];
+		int n_bytes = c -'0';
+		number_bytes(file,n_bytes);
+	}
 
 	fclose(file);
 

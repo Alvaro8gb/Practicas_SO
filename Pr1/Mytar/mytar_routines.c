@@ -14,12 +14,30 @@ extern char *use;
  *
  * Returns the number of bytes actually copied or -1 if an error occured.
  */
-int
-copynFile(FILE * origin, FILE * destination, int nBytes)
-{
-	// Complete the function
-	return -1;
+int copynFile(FILE * origin, FILE * destination, int nBytes){
+	int nb_read = 0;
+	int c , ret ;
+	
+
+	if( origin == NULL || destination == NULL || nBytes < 0 ) 
+		return -1;
+
+	while ((c = getc(origin)) != EOF && nb_read <= nBytes ) {
+			
+		ret = putc((unsigned char) c, destination);
+
+		if (ret==EOF){
+			fclose(origin);
+			fclose(destination);
+			return -1;
+		}
+
+		nb_read++;
+	}	
+
+	return nb_read;
 }
+// int_MAX
 
 /** Loads a string from a file.
  *
@@ -32,11 +50,33 @@ copynFile(FILE * origin, FILE * destination, int nBytes)
  * 
  * Returns: !=NULL if success, NULL if error
  */
-char*
-loadstr(FILE * file)
-{
-	// Complete the function
-	return NULL;
+
+char* loadstr(FILE * file){
+
+	int c , size = 0; 
+	char * str = NULL;
+
+	if (file == NULL)  
+		return NULL;
+	
+	do{
+
+		c = getc(file) ;
+		size++;
+	    
+	}while( c != (int) "/0" && c == EOF);
+	
+	if (c == EOF)
+		return NULL;
+		
+	str = malloc(size);
+
+	fseek(file,-size, SEEK_CUR);
+
+	fread(str,1,size,file);
+
+	return str;
+	
 }
 
 /** Read tarball header and store it in memory.
@@ -48,9 +88,7 @@ loadstr(FILE * file)
  * On success it returns the starting memory address of an array that stores 
  * the (name,size) pairs read from the tar file. Upon failure, the function returns NULL.
  */
-stHeaderEntry*
-readHeader(FILE * tarFile, int *nFiles)
-{
+stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
 	// Complete the function
 	return NULL;
 }
@@ -76,8 +114,7 @@ readHeader(FILE * tarFile, int *nFiles)
  * pairs occupy strlen(name)+1 bytes.
  *
  */
-int
-createTar(int nFiles, char *fileNames[], char tarName[])
+int createTar(int nFiles, char *fileNames[], char tarName[])
 {
 	// Complete the function
 	return EXIT_FAILURE;
@@ -97,8 +134,7 @@ createTar(int nFiles, char *fileNames[], char tarName[])
  * stored in the data section of the tarball.
  *
  */
-int
-extractTar(char tarName[])
+int extractTar(char tarName[])
 {
 	// Complete the function
 	return EXIT_FAILURE;

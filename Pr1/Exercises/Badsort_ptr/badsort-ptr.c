@@ -16,6 +16,7 @@ item array[] = {
 
 void mostrar_array(item *a, int n){
     
+	printf("Array :\n");
     for(int i = 0; i < n; i++)
         printf("array[%d] = {%s, %d}\n", i, array[i].data, array[i].key);
 
@@ -26,20 +27,21 @@ void sort(item *a, int n) {
     int s = 1;
     item* p = NULL; // NULL == (void *)
 
-    for(; (i < n) & ( s != 0 ) ; i++) {
+    for(; (i < n) && ( s != 0 ) ; i++) {
         s = 0;
         p = a;
-        j = n-1;
+        j = 0;
         do {
             //printf("%d  %d  ",p->key , (p+1)->key);
-            if( p->key > (p+1)->key) {
-                item t = *p;
-                p  = (p+1);
-                *(p+1) = t;
-                s ++;
+            if( (p+j)->key > (p+j+1)->key) {
+                item t = *(p+j);
+                *(p + j)  = *(p+j+1);
+                *(p+j+1) = t;
+                s++;
                 
             }
-        } while ( --j >= 0 );
+	j++;
+        } while ( j < n-1 );
     }
 
 }

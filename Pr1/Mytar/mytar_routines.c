@@ -89,8 +89,28 @@ char* loadstr(FILE * file){
  * the (name,size) pairs read from the tar file. Upon failure, the function returns NULL.
  */
 stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
-	// Complete the function
-	return NULL;
+
+	stHeaderEntry * array_headers = NULL;
+	int nr_files = 0,res;
+
+	res = fread(&nr_files,sizeof(int),1,tarFile);
+
+	if ( res == 0)
+		return NULL;
+
+	array_headers = malloc(sizeof(stHeaderEntry) * nr_files );
+
+	for ( int i = 0 ; i < nr_files ; i++){
+
+	 	array_headers[i].name = loadstr(tarFile);
+		res = fread(&array_headers[i].size ,sizeof(int) ,1,tarFile);
+
+		if(res == 0) 
+			return NULL;
+
+	}
+
+	return array_headers;
 }
 
 /** Creates a tarball archive 
@@ -114,8 +134,7 @@ stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
  * pairs occupy strlen(name)+1 bytes.
  *
  */
-int createTar(int nFiles, char *fileNames[], char tarName[])
-{
+int createTar(int nFiles, char *fileNames[], char tarName[]){
 	// Complete the function
 	return EXIT_FAILURE;
 }

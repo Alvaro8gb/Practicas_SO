@@ -483,5 +483,8 @@ struct fuse_operations myFS_operations = {
     .write		= my_write,						// Write data into a file already opened
     .release	= my_release,					// Close an opened file
     .mknod		= my_mknod,						// Create a new file
+    .read = my_read,
+    .unlink = my_unlink
+
 };
 

@@ -393,3 +393,13 @@ int writeBlock(MyFileSystem *myFileSystem, DISK_LBA blockNumber, void *buffer)
     }
     return 0;
 }
+
+int my_read(const char * path , char * buff , size_t size, off_t offset , struct fuse_file_info *f ){
+
+    return -1;
+}
+int my_unlink(){
+
+
+    return -1;
+}

@@ -8,23 +8,35 @@
 
 char permissions[] = {'x', 'w', 'r'};
 
-int status(char *);
+int status(char *, int simbolic);
 
 int main(int argc, char *argv[]) {
-	int i;
+	int i = 0;
+	char option;
+	int simbolic  = 0;
 
 	// See if the number of arguments in the command line is correct
 	if (argc < 2)
-		fprintf(stderr, "Usage: %s files...\n", argv[0]), exit(-1);
-
+		fprintf(stderr, "Usage: %s -l files...\n", argv[0]), exit(-1);
+	
+	while ((option = getopt(argc, argv, "l")) != EOF)  {
+		switch (option)  {
+		case 'l':
+			printf("Show simbolic file \n");
+			simbolic=1;
+			i = 2; break;
+		default: 		
+			i = 1; break;
+		}
+	}
 	// Show the status of each file
-	for (i=1; i<argc; i++)
-		status(argv[i]);
+	for (; i<argc; i++)
+		status(argv[i],simbolic);
 
 	exit(0);
 }
 
-int status(char *filename) {
+int status(char *filename, int simbolic) {
 	struct stat buf;
 	struct passwd *pw;
 	struct group *gr;
@@ -53,13 +65,17 @@ int status(char *filename) {
         case S_IFDIR:
             printf("directory.\n"); break;
         case S_IFCHR:
-            printf("character device.\n"); break;
+            printf("character device.\n");
+			 break;
         case S_IFBLK:
             printf("block device.\n"); break;
         case S_IFIFO:
             printf("FIFO (named pipe).\n"); break;
         case S_IFLNK:
-            printf("symbolic link.\n"); break;
+            printf("symbolic link.\n"); 
+			if (simbolic) 
+				lstat(filename,&buf);
+			break;
         default:
             printf("UNKNOWN.\n"); break;
 	}

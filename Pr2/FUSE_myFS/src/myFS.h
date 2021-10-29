@@ -239,6 +239,16 @@ int readBlock(MyFileSystem *myFileSystem, DISK_LBA blockNumber, void *buffer);
 int writeBlock(MyFileSystem *myFileSystem, DISK_LBA blockNumber, void *buffer);
 
 int my_read(const char * path , char * buff , size_t size, off_t offset , struct fuse_file_info *f );
-int my_unlink();
+/**
+ *@brief  
+   * @param path nombre/ruta del fichero
+   * @param buf buffer donde hay que copiar los bytes leı́dos del fichero
+   * @param size cantidad de bytes a leer
+   * @param offset offset desde el comienzo del fichero para comenzar la lectura
+   * @param fi estructura de FUSE asociada al fichero
+   * @return un número negativo en caso de error, 0 en otro caso
+**/
+
+static int my_unlink(const char *path);
 
 #endif

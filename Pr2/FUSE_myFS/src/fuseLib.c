@@ -475,6 +475,72 @@ static int my_truncate(const char *path, off_t size)
 }
 
 
+int my_read(const char * path , char * buff , size_t size, off_t offset , struct fuse_file_info *f ){ 
+    char buffer[BLOCK_SIZE_BYTES]; 
+    int bytes2Read, totalRead = 0;
+
+    NodeStruct *node = myFileSystem.nodes[f->fh];
+
+    if(offset > node->fileSize)
+        return -EIO;
+    
+    if(offset + size > node->fileSize)
+         bytes2Read = node->fileSize - offset;
+    else 
+        bytes2Read = size;
+
+    int i, currentBlock, offBlock;
+
+    while (totalRead < bytes2Read) {
+        currentBlock = node->blocks[offset /BLOCK_SIZE_BYTES]; 
+        offBlock = offset % BLOCK_SIZE_BYTES;  
+
+        if( readBlock(&myFileSystem, currentBlock, &buffer)==-1 ) {
+            fprintf(stderr,"Error reading blocks in my_write\n");
+            return -EIO;
+        }
+        
+        for(i = offBlock; (i < BLOCK_SIZE_BYTES) && (totalRead < size); i++) 
+            buf[totalRead++] = buffer[i];
+
+         totalRead += (i - offBlock);
+         offset += (i - offBlock);
+    }
+
+    return totalRead;
+}
+static int my_unlink(const char *path) { 
+     int idxNode; 
+    // Buscar path en el directorio del SF
+     int idxDir = findFileByName(&myFileSystem, (char *)path + 1));
+
+     if ( idxDir == -1)
+        return -EIO;
+
+     idxNode = myFileSystem.directory.files[idxDir].nodeIdx;
+    
+    resizeNode(idxNode,0);
+    
+    myFileSystem.directory.files[idxDir].freeFile = true;
+
+    myFileSystem.directory.numFiles--;
+
+    myFileSystem.nodes[idxNode]->freeNode = true;
+
+    myFileSystem.numFreeNodes++;
+
+    
+    updateDirectory(myFileSystem);
+    updateNode(myFileSystem,idxNode,myFileSystem.nodes[idxNode]);
+
+    free(myFileSystem.nodes[idxNode]);
+
+    updateDirectory
+    
+    //Liberar la memoria del nodo-i y actualizar la tabla 
+        return 0;
+}
+
 struct fuse_operations myFS_operations = {
     .getattr	= my_getattr,					// Obtain attributes from a file
     .readdir	= my_readdir,					// Read directory entries

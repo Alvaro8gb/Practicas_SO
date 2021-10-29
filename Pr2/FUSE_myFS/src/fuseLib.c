@@ -481,43 +481,46 @@ int my_read(const char * path , char * buff , size_t size, off_t offset , struct
 
     NodeStruct *node = myFileSystem.nodes[f->fh];
 
-    if(offset > node->fileSize)
-        return -EIO;
+    if(offset > node->fileSize){
+        fprintf(stderr,"Error in offset in my_read\n");
+        return -1;
+    }
+        
     
     if(offset + size > node->fileSize)
          bytes2Read = node->fileSize - offset;
     else 
         bytes2Read = size;
 
+    
     int i, currentBlock, offBlock;
 
     while (totalRead < bytes2Read) {
+        
         currentBlock = node->blocks[offset /BLOCK_SIZE_BYTES]; 
         offBlock = offset % BLOCK_SIZE_BYTES;  
 
         if( readBlock(&myFileSystem, currentBlock, &buffer)==-1 ) {
-            fprintf(stderr,"Error reading blocks in my_write\n");
-            return -EIO;
+            fprintf(stderr,"Error reading blocks in my_read\n");
+            return -1;
         }
         
         for(i = offBlock; (i < BLOCK_SIZE_BYTES) && (totalRead < size); i++) 
-            buf[totalRead++] = buffer[i];
+            buff[totalRead++] = buffer[i];
 
-         totalRead += (i - offBlock);
-         offset += (i - offBlock);
+        offset += (i - offBlock);
     }
 
     return totalRead;
 }
 static int my_unlink(const char *path) { 
-     int idxNode; 
-    // Buscar path en el directorio del SF
-     int idxDir = findFileByName(&myFileSystem, (char *)path + 1));
 
-     if ( idxDir == -1)
-        return -EIO;
+    int idxNode, idxDir = findFileByName(&myFileSystem, (char *)path + 1) ;
 
-     idxNode = myFileSystem.directory.files[idxDir].nodeIdx;
+    if ( idxDir == -1)
+        return -1;
+
+    idxNode = myFileSystem.directory.files[idxDir].nodeIdx;
     
     resizeNode(idxNode,0);
     
@@ -530,8 +533,8 @@ static int my_unlink(const char *path) {
 
     myFileSystem.numFreeNodes++;
 
-    updateDirectory(myFileSystem);
-    updateNode(myFileSystem,idxNode,myFileSystem.nodes[idxNode]);
+    updateDirectory(&myFileSystem);
+    updateNode(&myFileSystem,idxNode,myFileSystem.nodes[idxNode]);
     
     return 0;
 }
@@ -544,8 +547,8 @@ struct fuse_operations myFS_operations = {
     .write		= my_write,						// Write data into a file already opened
     .release	= my_release,					// Close an opened file
     .mknod		= my_mknod,						// Create a new file
-    .read = my_read,
-    .unlink = my_unlink
+    .read = my_read,                            // Read a file
+    .unlink = my_unlink                         // Delete a file
 
 };
 

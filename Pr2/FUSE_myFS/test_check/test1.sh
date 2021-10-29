@@ -19,3 +19,5 @@ echo 'This is file 2' > $MPOINT/file2.txt
 ls $MPOINT -la
 read -p "Press enter..."
 
+rm -R -f test
+

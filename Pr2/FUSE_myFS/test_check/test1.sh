@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo Executing test1.sh .....
+
+cd ..
+
 MPOINT="./mount-point"
 
 rm -R -f test

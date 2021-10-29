@@ -525,16 +525,13 @@ static int my_unlink(const char *path) {
 
     myFileSystem.directory.numFiles--;
 
-    myFileSystem.nodes[idxNode] = NULL;
-
     free(myFileSystem.nodes[idxNode]);
+    myFileSystem.nodes[idxNode] = NULL;
 
     myFileSystem.numFreeNodes++;
 
     updateDirectory(myFileSystem);
     updateNode(myFileSystem,idxNode,myFileSystem.nodes[idxNode]);
-
-    sync();
     
     return 0;
 }

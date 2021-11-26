@@ -30,7 +30,8 @@ int main() {
 	
 	for (i=0; i<N; i++) {
 		
-		pid = fork();
+		pid = fork();	
+		sleep(2);
 
 		if ( pid == -1) {
 			printf("ERROR. Process %u could not fork. Exit\n",pid);
@@ -38,7 +39,7 @@ int main() {
 		}
 		else if ( pid == 0 ) {
 			//Child
-			sleep(2);
+			
 			#ifdef EXERCISE_OPEN
 
 			fd=open("file.txt",O_CREAT | O_RDWR ,0666);
@@ -66,11 +67,15 @@ int main() {
 			
 			fflush(NULL);
 		}
+
+	
 	}
 
 	fclose(file_desc);
 
-	while (wait(NULL) != -1) ;
+	if(pid !=0) sleep(10);
+
+	//while (wait(NULL) != -1) ;
 
 
 	if (errno != ECHILD) {

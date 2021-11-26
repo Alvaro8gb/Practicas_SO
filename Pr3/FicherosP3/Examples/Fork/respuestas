@@ -1,0 +1,9 @@
+a) 8
+b) 8
+
+c) Si es posible
+d)z
+
+
+
+sum Parciale s es una vaiable global compartida y no esta protegida de escritura simultanea

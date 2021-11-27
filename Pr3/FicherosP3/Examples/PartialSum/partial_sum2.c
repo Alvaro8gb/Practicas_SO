@@ -11,7 +11,7 @@ void * partial_sum(void * arg) {
 
   for (j = ni; j <= nf; j++) {
     tmp=total_sum;
-    sched_yield();
+    sched_yield(); //cede el procesador
     tmp=tmp+j;
     sched_yield();
     total_sum = tmp;

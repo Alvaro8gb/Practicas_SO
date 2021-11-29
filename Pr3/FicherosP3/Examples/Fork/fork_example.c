@@ -7,7 +7,7 @@
 #include <string.h>
 
 #define N 3
-//#define EXERCISE_OPEN 0
+//#define EXERCISE_OPEN 
 
 int a_global = 0;
 char tab[2*N ] = "\0";
@@ -31,7 +31,6 @@ int main() {
 	for (i=0; i<N; i++) {
 		
 		pid = fork();	
-		sleep(2);
 
 		if ( pid == -1) {
 			printf("ERROR. Process %u could not fork. Exit\n",pid);
@@ -73,9 +72,9 @@ int main() {
 
 	fclose(file_desc);
 
-	if(pid !=0) sleep(10);
+	//if(pid !=0) sleep(10);
 
-	//while (wait(NULL) != -1) ;
+	while (wait(NULL) != -1) ;
 
 
 	if (errno != ECHILD) {

@@ -4,14 +4,15 @@
 
 int my_system(char * comand){
 	
-	pid_t pid = fork();
 	int ret;
-
-	if (pid == 0) 
-		ret = execl("/bin/bash", "/bin/bash","-c",comand,NULL);
-		
+	pid_t pid = fork();
+	
+	if (pid == 0){
+		ret = execl("/bin/bash","/bin/bash","-c",comand,NULL);
+		if(ret == -1) exit(-1);
+	}
 	else
-		wait(NULL);
+		ret = wait(NULL);
 
 	return ret; 
 }

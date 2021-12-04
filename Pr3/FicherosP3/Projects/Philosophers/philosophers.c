@@ -64,7 +64,7 @@ void* philosopher(void* i)
         
         // PUT FORKS BACK ON THE TABLE
 
-	pthread_mutex_unlock(&forks[right]);
+	    pthread_mutex_unlock(&forks[right]);
         pthread_mutex_unlock(&forks[left]);
         
         toSleep(nPhilosopher);
@@ -81,5 +81,6 @@ int main()
     
     for(i=0; i<NR_PHILOSOPHERS; i++)
         pthread_join(philosophers[i],NULL);
+        
     return 0;
 } 

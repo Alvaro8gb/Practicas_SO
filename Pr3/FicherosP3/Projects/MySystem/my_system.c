@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 {
 	if (argc!=2){
 		fprintf(stderr, "Usage: %s <command>\n", argv[0]);
-		exit(1);
+		exit(-1);
 	}
 
 	return my_system(argv[1]);

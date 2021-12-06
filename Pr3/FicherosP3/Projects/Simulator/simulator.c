@@ -18,7 +18,6 @@ int * esperando_bajar = NULL;	// personas que desean bajar en cada parada
 pthread_mutex_t m;
 pthread_cond_t bus_esperando,usuarios_esperando;
 
-
 void Autobus_En_Parada() {  
 
      /* Ajustar el estado y bloquear al autobus hasta que no haya pasajeros que
@@ -28,7 +27,7 @@ void Autobus_En_Parada() {
 
     estado =  EN_PARADA;    
 
-    while((esperando_bajar[parada_actual] > 0  && n_ocupantes < cap_bus ) || esperando_subir[parada_actual]> 0 ){
+    while((esperando_bajar[parada_actual] > 0) || (esperando_subir[parada_actual] > 0 && n_ocupantes < cap_bus)){// NO puede esperar a que suban si el bus esta lleno
         pthread_cond_broadcast(&usuarios_esperando);
         pthread_cond_wait(&bus_esperando, &m);
     }      
@@ -138,11 +137,15 @@ int main(int argc, char * argv[]) {
 		fprintf(stderr, "Usage: %s <capacidad_autobus> <numero_usuarios> <numero_paradas>\n", argv[0]);
 		exit(-1);
 	}
-
     
 	cap_bus = atoi(argv[1]);
     n_usuarios = atoi(argv[2]);
 	n_paradas = atoi(argv[3]);
+
+    if( cap_bus < 0 || n_usuarios < 0 || n_paradas < 0){
+        fprintf(stderr, "No es posible tener numeros negativos ¿¿¿???", argv[0]);
+		exit(-1);
+    }
 
     pthread_mutex_init(&m,NULL);
     pthread_cond_init(&bus_esperando,NULL);

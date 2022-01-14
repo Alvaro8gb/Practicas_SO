@@ -16,16 +16,14 @@ extern char *use;
  */
 int copynFile(FILE * origin, FILE * destination, int nBytes){
 	int nb_read = 0;
-	int c , ret ;
+	int c ;
 
 	if( origin == NULL || destination == NULL || nBytes < 0 ) 
 		return -1;
 
-	while ( ((c = getc(origin)) != EOF ) && nb_read < nBytes ) {
+	while ( (( c = getc(origin)) != EOF ) && nb_read < nBytes ) {
 
-		ret = putc((unsigned char) c, destination);
-
-		if (ret==EOF){
+		if (putc((unsigned char) c, destination)==EOF){
 			fclose(origin);
 			fclose(destination);
 			return -1;
@@ -34,7 +32,7 @@ int copynFile(FILE * origin, FILE * destination, int nBytes){
 		nb_read++;
 	}
 
-	fseek(origin,-1,SEEK_CUR);	
+	fseek(origin,-1,SEEK_CUR);
 
 	return nb_read;
 }
@@ -63,10 +61,10 @@ char* loadstr(FILE * file){
 	do{
 		c = getc(file) ;
 
-		size++;
-
 		if (c == EOF)
 			return NULL;
+		else 
+			size++;
 
 	} while( c != (int) '\0' );
 	
@@ -74,7 +72,7 @@ char* loadstr(FILE * file){
 
 	fseek(file,-size, SEEK_CUR);
 
-	fread(str,size,1,file);
+	fread(str,sizeof(char),size,file);
 
 	return str;
 	
@@ -104,7 +102,7 @@ stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
 	for ( int i = 0 ; i < nr_files ; i++){
 
 	 	array_headers[i].name = loadstr(tarFile);
-		res = fread(&array_headers[i].size ,sizeof(int) ,1,tarFile);
+		res = fread(&array_headers[i].size ,sizeof(unsigned int) ,1,tarFile);
 
 		if(res == 0) 
 			return NULL;

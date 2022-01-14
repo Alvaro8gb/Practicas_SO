@@ -34,6 +34,8 @@ echo diff between copys :
 diff $temp_path$file1 $MPOINT'fuseLib.c'
 diff $temp_path$file2 $MPOINT'myFS.h'
 
+
+echo -e "\n" truncating one less block $temp_path$file1 and $MPOINT$file1
 truncate  -o -s -1 $temp_path$file1
 truncate  -o -s -1 $MPOINT$file1
 

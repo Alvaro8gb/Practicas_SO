@@ -8,16 +8,15 @@ extern char *use;
 
 int copynFile(FILE * origin, FILE * destination, int nBytes){
 	int nb_read = 0;
-	int c , ret ;
+	int c ;
 
 	if( origin == NULL || destination == NULL || nBytes < 0 ) 
 		return -1;
 
 	while ( nb_read < nBytes && ((c = getc(origin)) != EOF ) ) {
 
-		ret = putc((char) c, destination);
-
-		if (ret==EOF){
+	
+		if (putc((char) c, destination) == EOF){
 			fclose(origin);
 			fclose(destination);
 			return -1;
@@ -40,6 +39,8 @@ char* loadstr(FILE * file){
 	while ((c = getc(file)) != '\0'){
 		if (c == EOF)
 			return NULL;
+		else 
+			size++;
 
 		size++;
 	}

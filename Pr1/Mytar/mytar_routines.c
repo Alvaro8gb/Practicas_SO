@@ -8,15 +8,16 @@ extern char *use;
 
 int copynFile(FILE * origin, FILE * destination, int nBytes){
 	int nb_read = 0;
-	int c ;
+	int c , ret ;
 
 	if( origin == NULL || destination == NULL || nBytes < 0 ) 
 		return -1;
 
-	while ( nb_read < nBytes && ((c = getc(origin)) != EOF ) ) {
+	while (  nb_read < nBytes && ((c = getc(origin)) != EOF) ) {
 
-	
-		if (putc((char) c, destination) == EOF){
+		ret = putc((unsigned char) c, destination);
+
+		if (ret==EOF){
 			fclose(origin);
 			fclose(destination);
 			return -1;
@@ -28,6 +29,7 @@ int copynFile(FILE * origin, FILE * destination, int nBytes){
 	return nb_read;
 }
 
+
 char* loadstr(FILE * file){
 
 	int  c, size = 0; 
@@ -36,25 +38,25 @@ char* loadstr(FILE * file){
 	if (file == NULL)  
 		return NULL;
 
-	while ((c = getc(file)) != '\0'){
-		if (c == EOF)
-			return NULL;
-		else 
-			size++;
+	do{
+		c = getc(file) ;
 
 		size++;
-	}
 
-	size++; //add last byte
+		if (c == EOF)
+			return NULL;
+
+	} while( c != (int) '\0' );
 	
-	fseek(file,-size, SEEK_CUR);
 	str = malloc(size);
-	fread(str,sizeof(char),size,file);
+
+	fseek(file,-size, SEEK_CUR);
+
+	fread(str,size,1,file);
 
 	return str;
 	
 }
-
 stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
 
 	stHeaderEntry * array_headers = NULL;
@@ -70,7 +72,7 @@ stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
 	for ( int i = 0 ; i < nr_files ; i++){
 
 	 	array_headers[i].name = loadstr(tarFile);
-		res = fread(&array_headers[i].size ,sizeof(unsigned int) ,1,tarFile);
+		res = fread(&array_headers[i].size ,sizeof(int) ,1,tarFile);
 
 		if(res == 0) 
 			return NULL;
@@ -83,7 +85,7 @@ stHeaderEntry* readHeader(FILE * tarFile, int *nFiles){
 }
 
 int createTar(int nFiles, char *fileNames[], char tarName[]){
-	// Complete the function
+
 	FILE * tar_file = fopen(tarName, "w");
 
 	if (tar_file == NULL) 
@@ -95,7 +97,7 @@ int createTar(int nFiles, char *fileNames[], char tarName[]){
 
 	for ( int i = 0; i < nFiles ; i++){
 
-		str_len = strlen(fileNames[i])+1;
+		str_len = strlen(fileNames[i]) + 1;
 
 		char * name = malloc(str_len);
 
@@ -128,8 +130,8 @@ int createTar(int nFiles, char *fileNames[], char tarName[]){
 
 	for (int i = 0 ; i< nFiles ; i++){
 
-		fwrite(array_headers[i].name , strlen(array_headers[i].name)+1, 1, tar_file);
-		fwrite(&array_headers[i].size, sizeof(unsigned int),1,tar_file);
+		fwrite(array_headers[i].name , strlen(array_headers[i].name) + 1, 1, tar_file);
+		fwrite(&array_headers[i].size, sizeof(int),1,tar_file);
 	}
 
 	for (int i = 0 ; i< nFiles ; i++)
@@ -143,6 +145,7 @@ int createTar(int nFiles, char *fileNames[], char tarName[]){
 }
 
 int extractTar(char tarName[]){
+	
 	FILE * tar_file = fopen(tarName,"r");
 	int nFiles = 0;
 	stHeaderEntry * array_headers = readHeader(tar_file,&nFiles);
@@ -155,6 +158,7 @@ int extractTar(char tarName[]){
 
 	}
 
+	free(array_headers);
 	fclose(tar_file);				
 
 	return EXIT_SUCCESS;

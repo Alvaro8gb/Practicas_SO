@@ -1,6 +1,6 @@
 TARGET = mytar
 CC = gcc
-CFLAGS = -g -Wall 
+CFLAGS = -g -Wall -pthread 
 OBJS = mytar.o mytar_routines.o
 SOURCES = $(addsuffix .c, $(basename $(OBJS)))
 HEADERS = mytar.h

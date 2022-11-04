@@ -144,22 +144,50 @@ int createTar(int nFiles, char *fileNames[], char tarName[]){
 	return EXIT_SUCCESS;
 }
 
+int tratar_file(void * arg) {
+
+	int f_tar = open(tar_name,"r");
+	lseek(f_tar, inicio, SEEK_SET);
+	FILE * f = fopen(array_headers[i].name,"w");
+	copynFile(f_tar,f,array_headers[i].size);
+	fclose(f);
+}
+
+
 int extractTar(char tarName[]){
 	
 	FILE * tar_file = fopen(tarName,"r");
 	int nFiles = 0;
 	stHeaderEntry * array_headers = readHeader(tar_file,&nFiles);
 
-	for(int i = 0 ; i < nFiles ; i++){ 
+	int tam_header = sizeof(int) + sizeof(int) * nFiles;
 
-		FILE * f = fopen(array_headers[i].name,"w");
-		copynFile(tar_file,f,array_headers[i].size);
-		fclose(f);
-
+	for(int i =0; i< nFiles;i++){
+		tam_header+= len(array_headers[i].name);
 	}
 
+	fclose(tar_file);		
+	pthread_t *hebras =  malloc(sizeof(pthread_t) * nFiles); 
+
+	int inicio = tam_header;
+
+	for(int i= 0; i< nFiles;i++){
+
+		struct = {inicio , array_headers[i].size};
+
+		pthread_create(&hebras[i], NULL, tratar_file, (void*)vals); 
+
+		inicio+= array_headers[i].size;
+	}
+
+
+	for(int i = 0; i< n_usuarios; i++){
+		pthread_join(usuarios[i],NULL);  
+		
+	}		
+
+
 	free(array_headers);
-	fclose(tar_file);				
 
 	return EXIT_SUCCESS;
 }

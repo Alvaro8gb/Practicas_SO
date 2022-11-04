@@ -26,8 +26,9 @@ int main(void) {
   int num2[2]={5000, 10000};
 
   /* Two threads are created */
-  pthread_create(&th1, NULL, partial_sum, (void*)num1);
-  pthread_create(&th2, NULL, partial_sum, (void*)num2);
+  pthread_create(&th1, NULL, partial_sum, (void*) num1);
+  pthread_create(&th2, NULL, partial_sum, (void*) num2);
+
 
   /* the main thread waits until both threads complete */
   pthread_join(th1, NULL);
